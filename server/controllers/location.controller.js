@@ -4,6 +4,19 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { locationService } = require('../services');
 
+
+
+
+test = async () => {
+  let products = await locationService.getProductsIdByCoordinates([-0.03232, 51.35822])
+
+  console.log("products:  ", JSON.stringify(products))
+
+}
+test();
+
+
+
 const createLocation = catchAsync(async (req, res) => {
   const location = await locationService.createLocation(req.body);
   res.status(httpStatus.CREATED).send(location);

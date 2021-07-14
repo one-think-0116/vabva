@@ -35,11 +35,7 @@ const costSchema = mongoose.Schema({
         type: Number
     },
     minimum: {
-        type: {
-            type: String,
-            enum: costTypes
-        },
-        value: {
+        days: {
             type: Number
         }
     },
@@ -48,33 +44,33 @@ const costSchema = mongoose.Schema({
             type: String,
             enum: costTypes
         },
-        value: {
+        amount: {
             type: Number
         }
     },
-    additional: {
-        type: [{
-            name: {
-                type: String,
-                trim: true
-            },
-            description: {
-                type: String,
-                trim: true
-            },
-            type: {
-                type: String,
-                enum: costTypes
-            },
-            require: {
-                type: Boolean
-            }
-        }]
-    },
+    additional: [{
+        name: {
+            type: String,
+            trim: true
+        },
+        description: {
+            type: String,
+            trim: true
+        },
+        type: {
+            type: String,
+            enum: costTypes
+        },
+        amount: {
+            type: Number
+        },
+        mandatory: {
+            type: Boolean
+        }
+    }],
     sample: {
         type: Number
     }
-
 })
 
 const variationSchema = mongoose.Schema(
@@ -125,60 +121,20 @@ const questionSchema = mongoose.Schema(
         }
     })
 
-const reviewSchema = mongoose.Schema(
+const geometrySchema = mongoose.Schema(
     {
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
+        type: {
+            type: String,
+            required: true,
+            enum: ['Polygon'],
+            default: "Polygon"
         },
-        rating: {
-            type: Number,
+        coordinates: {
+            type: [[[Number]]],
             required: true
-        },
-        title: {
-            type: String,
-            trim: true
-        },
-        comment: {
-            type: String,
-            trim: true
-        },
-        images: {
-            type: imagesSchema
-        },
-        reply: [{
-            comment: {
-                type: String
-            },
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User"
-            }
-        }],
-        statistics: {
-            likes: {
-                total: {
-                    type: Number,
-                    defualt: 0
-                },
-                userId: [{
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "User"
-                }]
-            },
-            reports: {
-                total: {
-                    type: Number,
-                    defualt: 0
-                },
-                userId: [{
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "User"
-                }]
-            }
         }
-    })
-
+    }
+)
 
 //add product reference
 const productSchema = mongoose.Schema(
@@ -208,6 +164,10 @@ const productSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category"
         },
+        reviewId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Review"
+        },
         estimatedDeliveryId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "DeliverySchema"
@@ -230,9 +190,28 @@ const productSchema = mongoose.Schema(
         questions: {
             type: [questionSchema]
         },
-        reviews: [{
-            type: reviewSchema
-        }]
+        summary: {
+            price: {
+                type: Number,
+                default: 0
+            },
+            priceAdditions: {
+                type: Number,
+                defualt: 0
+            },
+            purchaseCount: {
+                type: Number,
+                defualt: 0
+            },
+            totalReviewRating: {
+                type: Number,
+                defualt: 0
+            },
+            geometry: {
+                type: geometrySchema,
+                index: "2dsphere"
+            }
+        },
     },
     {
         timestamps: true,

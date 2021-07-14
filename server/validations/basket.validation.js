@@ -1,25 +1,40 @@
 const Joi = require('joi');
 const { objectId, isMobile, isPolygonCoordsClosedLineStrings } = require('./custom.validation');
-const { services, costTypes } = require('../config/services');
+const { services, costTypes, productOptionIdTypes } = require('../config/services');
 
-const createProduct = {
+const createBasket = {
     body: Joi.object()
         .keys({
-            productName: Joi.string(),
-            firstName: Joi.string(),
-            lastName: Joi.string(),
-            email: Joi.string().email(),
-            mobile: Joi.string().custom(isMobile),
-            additionalFee: Joi.array().items(
-                Joi.object({
-                    type: Joi.string().valid(...services),
-                    name: Joi.string(),
-                    cost: Joi.object().keys({
-                        type: Joi.string().valid(...costTypes),
-                        amount: Joi.number()
+            locationName: Joi.object().keys({
+                primary: Joi.string().required(),
+                secondary: Joi.string().required()
+            }).required(),
+            location: Joi.object().keys({
+                type: Joi.string().valid('Point').required(),
+                coordinates: Joi.array().ordered(
+                    Joi.number()
+                        .min(-180)
+                        .max(180)
+                        .required(),
+                    Joi.number()
+                        .min(-90)
+                        .max(90)
+                        .required()
+                )
+            }).required(),
+            products: Joi.array().items(
+                Joi.object().keys({
+                    productId: Joi.string().custom(objectId),
+                    selectedIdType: Joi.string().valid(...productOptionIdTypes),
+                    selectedId: Joi.string().custom(objectId),
+                    quantity: Joi.number().min(1).required(),
+                    service: Joi.object().keys({
+                        type: Joi.string().valid(...services).required(),
+                        start: Joi.date().required(),
+                        end: Joi.date().required(),
                     })
                 })
-            )
+            ).required()
         })
         .min(1),
 };
@@ -104,12 +119,5 @@ const deleteAdditionalFee = {
 }
 
 module.exports = {
-    createProduct,
-    getLocations,
-    getLocation,
-    updateLocation,
-    deleteLocation,
-    getAdditionalFee,
-    updateAdditionalFee,
-    deleteAdditionalFee
+    createBasket
 };

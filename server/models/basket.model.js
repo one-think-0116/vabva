@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+const { services, productOptionIdTypes } = require('../config/services');
 const { toJSON, paginate } = require('./plugins');
 
 const productBasketSchema = mongoose.Schema(
@@ -9,12 +10,19 @@ const productBasketSchema = mongoose.Schema(
             ref: "Product",
             required: true
         },
-        selectedVariant: {
+        selectedIdType: {
+            type: String,
+            enum: productOptionIdTypes,
+            required: true
+        },
+        selectedId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true
         },
-        selectedQuantity: {
-            type: Number
+        quantity: {
+            type: Number,
+            min: [1, "Quantity must be more than 1"],
+            required: true
         },
         service: {
             type: {
@@ -32,10 +40,22 @@ const productBasketSchema = mongoose.Schema(
 )
 const basketSchema = mongoose.Schema(
     {
-
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
         locationName: {
-            type: String,
-            trim: true
+            primary: {
+                type: String,
+                required: true,
+                trim: true
+            },
+            secondary: {
+                type: String,
+                required: true,
+                trim: true
+            }
         },
         location: {
             type: {
@@ -58,6 +78,17 @@ const basketSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 basketSchema.plugin(toJSON);
+
+/**
+* Check if password matches the user's password
+* @param {string} password
+* @returns {Promise<boolean>}
+*/
+basketSchema.statics.isBasketExists = async function (userId) {
+    const basket = await this.findOne({ userId })
+    return !!basket
+};
+
 
 /**
  * @typedef Basket

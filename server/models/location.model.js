@@ -42,12 +42,6 @@ const additionalFeeSchema = mongoose.Schema(
         }
     }
 )
-const productsListSchema = mongoose.Schema({
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product"
-    }
-})
 
 const locationSchema = mongoose.Schema(
     {
@@ -55,7 +49,7 @@ const locationSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        address: {
+        addressId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Address"
         },
@@ -81,8 +75,7 @@ const locationSchema = mongoose.Schema(
             type: geometrySchema,
             index: "2dsphere"
         },
-        additionalFee: [{ type: additionalFeeSchema }],
-        products: [{ type: productsListSchema }]
+        additionalFee: [{ type: additionalFeeSchema }]
     },
     {
         timestamps: true,

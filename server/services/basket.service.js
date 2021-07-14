@@ -1,15 +1,25 @@
 const httpStatus = require('http-status');
-const { Location } = require('../models');
+const { Product, Location, Basket } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
  * Create a location
- * @param {Object} locationBody
+ * @param {Object} basketBody
  * @returns {Promise<Location>}
  */
-const createLocation = async (locationBody) => {
-    const location = await Location.create(locationBody);
-    return location;
+const createBasket = async (basketBody) => {
+
+    const basketProducts = [...basketBody.products]
+    console.log("products: ", basketProducts)
+
+    if (await Basket.isBasketExists(basketBody.userId)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Basket already exists');
+    }
+
+   
+
+    const basket = await Basket.create(basketBody);
+    return basket;
 };
 
 /**
@@ -35,55 +45,6 @@ const getLocationById = async (id) => {
     return Location.findById(id);
 };
 
-const getLocationsByCoordinates = async (coordinates) => {
-    const locations = await Location.find({ geometry: { $geoIntersects: { $geometry: { type: "Point", coordinates } } } })
-    return locations;
-}
-
-const getProductsIdByCoordinates = async (coordinates) => {
-    const products = await Location
-        .aggregate(
-            [
-                {
-                    $match: {
-                        geometry: { $geoIntersects: { $geometry: { type: "Point", coordinates } } }
-                    }
-                },
-                {
-                    $group: {
-                        _id: "$products", //null
-                        // productsId: { $push: "$products" }
-                    }
-                },
-                // {
-                //     "$project": {
-                //         "productsId": {
-                //             "$reduce": {
-                //                 "input": "$productsId",
-                //                 "initialValue": [],
-                //                 "in": { "$setUnion": ["$$value", "$$this"] }
-                //             }
-                //         }
-                //     }
-                // }
-
-            ])
-
-    let productIds = [];
-    for (let index = 0; index < products.length; index++) {
-       productIds.push(...products[index]["_id"])
-    }
-    //this is to remove duplicate entries..
-    productIds = Array.from(new Set(productIds));
-   
-    //we could use aggregation above for all of this without JS,
-    //but this is to reduce the workload of the database, by ultilising for loops and Array.push
-    return productIds;
-}
-
-const getProductBookingsByIds = async (productIds, dates) => {
-
-}
 /**
  * Update location by id
  * @param {ObjectId} locationId
@@ -156,13 +117,5 @@ const deleteAdditionalFeeById = async (locationId, additionalFeeId) => {
 };
 
 module.exports = {
-    createLocation,
-    queryLocations,
-    getLocationById,
-    updateLocationById,
-    deleteLocationById,
-    updateAdditionalFeeById,
-    deleteAdditionalFeeById,
-    getLocationsByCoordinates,
-    getProductsIdByCoordinates
+    createBasket,
 };

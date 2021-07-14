@@ -4,7 +4,6 @@ const { toJSON, paginate } = require('./plugins');
 
 const deliveryEstimateSchema = mongoose.Schema(
     {
-
         name: {
             type: String,
             trim: true,

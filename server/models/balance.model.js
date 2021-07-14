@@ -15,6 +15,7 @@ const balanceSchema = mongoose.Schema(
         transactions: [{
             balance: {
                 type: Number,
+                default: 0,
                 required: true
             },
             type: {

@@ -2,6 +2,17 @@
 const mongoose = require('mongoose');
 const { validator } = require('validator');
 const { toJSON, paginate } = require('./plugins');
+const {costTypes} = require('../config/services')
+
+const costSchema = mongoose.Schema({
+    type: {
+        type: String,
+        enum: costTypes
+    },
+    amount: {
+        type: Number
+    }
+});
 
 const taxIdSchema = mongoose.Schema(
     {
@@ -14,9 +25,8 @@ const taxIdSchema = mongoose.Schema(
                 }
             }
         },
-        amount: {
-            type: Number,
-            default: 0
+        cost: {
+            type: costSchema
         },
         localName: {
             type: String,

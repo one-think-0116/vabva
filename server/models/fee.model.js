@@ -5,10 +5,12 @@ const { toJSON, paginate } = require('./plugins');
 
 const feeSchema = mongoose.Schema(
     {
-
+        type: {
+            type: String,
+            enum: ["fixed", "percentage"]
+        },
         amount: {
-            type: Number,
-            enum: ["fixed", "percentage"],
+            type: Number
         }
     },
     {
