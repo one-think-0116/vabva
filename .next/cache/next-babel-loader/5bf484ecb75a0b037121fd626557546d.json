@@ -1,0 +1,1 @@
+{"ast":null,"code":"// number of categories to show in the navigation by default\nvar navItemLength = 5;\nexport { navItemLength };","map":null,"metadata":{},"sourceType":"module"}

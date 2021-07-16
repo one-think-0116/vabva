@@ -4,12 +4,14 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { basketService } = require('../services');
 
-
+const mongoose = require('mongoose');
 
 const createBasket = catchAsync(async (req, res) => {
-    const userId = req.user._id;
+    // const userId = req.user._id;
+    const userId = mongoose.Types.ObjectId("60f06cdb2b596b39489fa4cf");
     const reqBodyWithUserId = { userId, ...req.body };
     const basket = await basketService.createBasket(reqBodyWithUserId);
+
     res.status(httpStatus.CREATED).send(basket);
 });
 
@@ -17,7 +19,7 @@ const createBasket = catchAsync(async (req, res) => {
 const getLocations = catchAsync(async (req, res) => {
     const filter = pick(req.query, ['locationName']);
     //search with startWith and include lowercase...
-    const _filter = filter?.locationName ? { locationName: new RegExp("^" + filter.locationName, "i") } : {}
+    const _filter = filter? locationName ? { locationName: new RegExp("^" + filter.locationName, "i") } : {} : {}
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
     const result = await locationService.queryLocations(_filter, options);
     res.send(result);

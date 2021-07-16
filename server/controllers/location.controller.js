@@ -25,8 +25,9 @@ const createLocation = catchAsync(async (req, res) => {
 
 const getLocations = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['locationName']);
+  console.log("filter",filter)
   //search with startWith and include lowercase...
-  const _filter = filter?.locationName ? { locationName: new RegExp("^" + filter.locationName, "i") } : {}
+  const _filter = filter ? locationName ? { locationName: new RegExp("^" + filter.locationName, "i") } : {}:{};
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await locationService.queryLocations(_filter, options);
   res.send(result);

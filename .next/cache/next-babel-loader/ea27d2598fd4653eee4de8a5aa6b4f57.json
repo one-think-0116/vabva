@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { jsx as _jsx } from \"react/jsx-runtime\";\n\nvar Spacer = function Spacer(_ref) {\n  var width = _ref.width;\n  return /*#__PURE__*/_jsx(\"div\", {\n    className: \"m-\".concat(width)\n  });\n};\n\nexport default Spacer;","map":null,"metadata":{},"sourceType":"module"}

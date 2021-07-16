@@ -1,0 +1,1 @@
+{"ast":null,"code":"var colors = {\n  primary: '#89bdf9'\n};\nexport { colors };","map":null,"metadata":{},"sourceType":"module"}

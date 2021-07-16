@@ -5,10 +5,10 @@ const basketValidation = require('../../validations/basket.validation');
 const basketController = require('../../controllers/basket.controller');
 
 const router = express.Router();
-
 router
     .route('/')
-    .post(auth('manageBasket'), validate(basketValidation.createBasket), basketController.createBasket)
+    .post( validate(basketValidation.createBasket), basketController.createBasket)
+    // .post(auth('manageBasket'), validate(basketValidation.createBasket), basketController.createBasket)
  // .get(auth('getBasket'), validate(basketValidation.getLocations), locationController.getLocations)
 
 // router
